@@ -1,3 +1,4 @@
+using InGameConsole;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,26 @@ public class ConnectionManager : MonoBehaviour
         //ejemplo
         //GameObject obj = GameObject.Find("MenuManager");
         //MenuManager menuManager = obj.GetComponent<MenuManager>();
+        GetMenuValues();
+
+    }
+
+    public void ConnectToServerAndGoToScene(string sceneName)
+    {
+        GetMenuValues();
+
+        ConnectionData connData = ConnectionData.ConnectionDataInstance;
+        connData.PlayerName = _playerName;
+        connData.Host = _host;
+        connData.Port = _port;
+
+        GameObject obj = GameObject.Find("MenuManager");
+        MenuManager menuManager = obj.GetComponent<MenuManager>();
+        menuManager.LoadScene(sceneName);
+    }
+
+    private void GetMenuValues()
+    {
 
         GameObject obj = GameObject.Find("TxtInputName");
         InputField txtName = obj.GetComponent<InputField>();
@@ -27,7 +48,5 @@ public class ConnectionManager : MonoBehaviour
         string[] connData = host.Split(':');
         _host = connData[0];
         _port = connData[1];
-
     }
-
 }
