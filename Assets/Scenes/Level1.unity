@@ -245,6 +245,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5d2b713685bec1419178b7f3190fa42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soilTexture: {fileID: 2800000, guid: 888dbc588d988f749a41ed669f079482, type: 3}
+  wallTexture: {fileID: 2800000, guid: 554aa3d7810b02e4f9dcf68f416aaf15, type: 3}
+  genericContainer: {fileID: 172348033456988531, guid: 7b9ac4cac4ca498489659d640f521019, type: 3}
+  cubeDefault: {fileID: 7054132593002994599, guid: ececd5185c49dee448600f9a53b70287, type: 3}
+  leader: {fileID: 3868661560093257808, guid: 2ab9a1dbabd28064795916d47e23ccbf, type: 3}
+  minion: {fileID: 1364897357701618739, guid: 88a0987d93079464f8c3de048015e2b9, type: 3}
+  minionsCount: 0
+  wayPointPrefab: {fileID: 7142233590115169461, guid: d4c82a875b6cfa2479579292b3cdb6e5, type: 3}
 --- !u!4 &583093764
 Transform:
   m_ObjectHideFlags: 0

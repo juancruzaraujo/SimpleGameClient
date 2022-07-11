@@ -499,6 +499,7 @@ namespace InGameConsole
                 else
                 {
                     ManagerConsola.instance.OpenCloseConsola(true);
+                    
                 }
 
             }
