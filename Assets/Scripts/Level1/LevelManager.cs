@@ -24,14 +24,15 @@ public class LevelManager : MonoBehaviour
 
     public GameObject wayPointPrefab;
 
-    Socket tcpSocketClient;
+    Socket _tcpSocketClient;
     string _dataIn;
+    int _tcpConnectionNumber;
 
     private void Awake()
     {
         _dataIn = "";
-        tcpSocketClient = new Socket();
-        tcpSocketClient.Event_Socket += TCPSocketClient_Event_Socket;
+        _tcpSocketClient = new Socket();
+        _tcpSocketClient.Event_Socket += TCPSocketClient_Event_Socket;
 
         ConnectionData connData = ConnectionData.ConnectionDataInstance;
 
@@ -51,7 +52,7 @@ public class LevelManager : MonoBehaviour
         _gridContainer.GetComponent<Grid>().SetWallTexture = wallTexture;
 
         //recien ahora intento conectarme
-        tcpSocketClient.ConnectClient(connectionParameters); 
+        _tcpSocketClient.ConnectClient(connectionParameters); 
     }
 
     // Start is called before the first frame update
@@ -68,7 +69,8 @@ public class LevelManager : MonoBehaviour
         {
             case EventParameters.EventType.CLIENT_CONNECTION_OK:
                 InGameConsole.ManagerConsola.instance.WriteLine(eventParameters.GetEventType.ToString());
-                tcpSocketClient.Send(eventParameters.GetConnectionNumber, ConnectionCommands.SEND_CONNECTION_OK);
+                _tcpConnectionNumber = eventParameters.GetConnectionNumber;
+                _tcpSocketClient.Send(_tcpConnectionNumber, ConnectionCommands.SEND_CONNECTION_OK);
                 break;
 
             case EventParameters.EventType.DATA_IN:
@@ -108,11 +110,26 @@ public class LevelManager : MonoBehaviour
             int size_z = int.Parse(commandParameters[3]);
             int coordsValue = int.Parse(commandParameters[4]);
 
-            InGameConsole.ManagerConsola.instance.WriteLine("Creando grilla");
+            InGameConsole.ManagerConsola.instance.WriteLine("Creando grilla>");
             _gridContainer.GetComponent<Grid>().CreateGrid(size_x, size_y, size_z,coordsValue);
-            InGameConsole.ManagerConsola.instance.WriteLine("grilla creada");
+            _gridContainer.GetComponent<Grid>().CreatePerimeterWall();
+
+
+            InGameConsole.ManagerConsola.instance.WriteLine("Grilla creada>");
+            _tcpSocketClient.Send(_tcpConnectionNumber, ConnectionCommands.SEND_LEVEL_CREATED);
+
 
             //result = GameComunication.DATASEND_CREATE_GRID + "|" + ConstantValues.LEVEL_SIZE_X + "|" + ConstantValues.LEVEL_SIZE_Y + "|" + ConstantValues.LEVEL_SIZE_Z;
         }
+
+        /*
+        if (commandFromServer.Contains(ConnectionCommands.DATAIN_CREATE_WALL))
+        {
+            InGameConsole.ManagerConsola.instance.WriteLine("Creado muro>");
+            _gridContainer.GetComponent<Grid>().CreatePerimeterWall();
+            InGameConsole.ManagerConsola.instance.WriteLine("Muro creado");
+            _tcpSocketClient.Send(_tcpConnectionNumber, ConnectionCommands.SEND_WALL_CREATED);
+        }
+        */
     }
 }

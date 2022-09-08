@@ -23,12 +23,7 @@ public class CellMatrix
         _wallTexture = wallTexture;
         return this;
     }
-    public CellMatrix SetSoilTexture(Texture soilTexture)
-    {
-        _soilTexture = soilTexture;
-        return this;
-    }
-
+        
     public CellMatrix SetPrefab(GameObject cellprefab)
     {
         _cellPrefab = cellprefab;
@@ -41,8 +36,35 @@ public class CellMatrix
         return this;
     }
 
+
+    public float GetPx
+    {
+        get
+        {
+            return _cell.GetComponent<Cell>().transform.position.x;
+        }
+
+    }
+
+    public float GetPy
+    {
+        get
+        {
+            return _cell.GetComponent<Cell>().transform.position.y;
+        }
+    }
+
+    public float GetPz
+    {
+        get
+        {
+            return _cell.GetComponent<Cell>().transform.position.z;
+        }
+    }
+
     public CellMatrix setPx(int px)
     {
+        
         _px = px;
         return this;
     }
@@ -65,16 +87,16 @@ public class CellMatrix
         return this;
     }
 
-    public void CreateCell(Vector3 localPos,int coordsValue)
+    public void CreateCell(Vector3 localPos,int coordsValue,Texture texture,bool isObstacle)
     {
-        //GameObject cell = Instantiate(_cellPrefab); //ver esto de hacerlo bien
+
         _cell = GameObject.Instantiate(_cellPrefab);
         _cell.AddComponent<Cell>();
         _cell.GetComponent<Cell>().setName(_name);
         _cell.GetComponent<Cell>().SetCoordinatePoints(_py, _px); //setPointY(_py);
         _cell.GetComponent<Cell>().SetCoords(coordsValue);
-        _cell.GetComponent<Cell>().SetTexture(_soilTexture);
-        _cell.GetComponent<Cell>().IsObstacle = false;
+        _cell.GetComponent<Cell>().SetTexture(texture);
+        _cell.GetComponent<Cell>().IsObstacle = isObstacle;
         _cell.transform.parent = _tr;
         _cell.transform.localPosition = localPos;
     }
@@ -82,20 +104,21 @@ public class CellMatrix
     public void CreateCellWall(Texture wallTexture)
     {
         
-        //float posX = _cell.GetComponent<Cell>().transform.position.x;
-        //float posY = _cell.GetComponent<Cell>().transform.position.y + Defaults.C_CELL_UP_MOVE_UNIT;
-        //float posZ = _cell.GetComponent<Cell>().transform.position.z;
+        float posX = _cell.GetComponent<Cell>().transform.position.x;
+        float posY = _cell.GetComponent<Cell>().transform.position.y + 1; // Defaults.C_CELL_UP_MOVE_UNIT;
+        float posZ = _cell.GetComponent<Cell>().transform.position.z;
 
-        //_cell.GetComponent<Cell>().transform.position = new Vector3(posX, posY, posZ);
-        //_cell.GetComponent<Cell>().IsObstacle = true;
-        //if (wallTexture != null)
-        //{
-        //    _cell.GetComponent<Cell>().SetTexture(wallTexture);
-        //}
-        //else
-        //{
-        //    _cell.GetComponent<Cell>().SetTexture(_wallTexture);
-        //}
+        _cell.GetComponent<Cell>().transform.position = new Vector3(posX, posY, posZ);
+        _cell.GetComponent<Cell>().IsObstacle = true;
+        _cell.GetComponent<Cell>().setName("wall");
+        if (wallTexture != null)
+        {
+            _cell.GetComponent<Cell>().SetTexture(wallTexture);
+        }
+        else
+        {
+            _cell.GetComponent<Cell>().SetTexture(_wallTexture);
+        }
     }
 
     public void DestroyCellWall(Texture cellTexture)

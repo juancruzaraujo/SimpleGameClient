@@ -6,6 +6,7 @@ public class Grid : MonoBehaviour
 {
     //private Cell _matrixCells;
     private CellMatrix[,,] _cellMatrix;
+    private CellMatrix[,,] _cellMatrixWall;
     private GameObject _cellPrefab;
     private Texture _soilTexture;
     private Texture _wallTexture;
@@ -80,38 +81,28 @@ public class Grid : MonoBehaviour
         _depth = depth;
 
         transform.position = new Vector3(-_width * 0.5f, _depth * 0.5f, _high * 0.5f);
-
+        
         _cellMatrix = new CellMatrix[_high, _width, _depth];
 
         for (int py = 0; py < _high; py++)
         {
             for (int px = 0; px < _width; px++)
             {
-
                 for (int pz = 0; pz < _depth; pz++)
                 {
-                    /*if ((py % % 2) == 0)
-                        Console.WriteLine("Es Par");
-                    else
-                        Console.WriteLine("Es Impar");
-                    */
+
                     CellMatrix auxCell = new CellMatrix();
                     auxCell.setPy(py);
                     auxCell.setPx(px);
-                    auxCell.SetSoilTexture(_soilTexture);
-                    auxCell.SetWallTexture(_wallTexture);
+                    
                     auxCell.SetPrefab(_cellPrefab);
                     auxCell.setName("soil[" + py.ToString() + "," + px.ToString() + "]");
                     auxCell.setParent(transform);
                     auxCell.SetScale(transform.localScale);
-                    auxCell.CreateCell(hInc * px + vInc * py + dInc * pz,coordsValue);
+                    auxCell.CreateCell(hInc * px + vInc * py + dInc * pz,coordsValue,_soilTexture,false);
 
                     _cellMatrix[py, px, pz] = auxCell;
 
-                    //esto no funciona, pero quiero saber que pasa
-                    //esto agrega y agrega scripts
-                    //CubeDefault.AddComponent<Cell>();
-                    //GameObject.Instantiate(CubeDefault);
                 }
             }
         }
@@ -120,21 +111,80 @@ public class Grid : MonoBehaviour
 
     public void CreatePerimeterWall()
     {
+
+        #region OLD
         /*
         for (int pz = 0; pz < _depth; pz++)
         {
             for (int py = 0; py < _high; py++)
             {
-                _cellMatrix[py, 0, pz].CreateCellWall(null);
-                _cellMatrix[py, _width - 1, pz].CreateCellWall(null);
+                //_cellMatrix[py, 0, pz].CreateCellWall(null);
+                //_cellMatrix[py, _width - 1, pz].CreateCellWall(null);
             }
 
             for (int px = 1; px < _width - 1; px++)
             {
-                _cellMatrix[0, px, pz].CreateCellWall(null);
-                _cellMatrix[_high - 1, px, pz].CreateCellWall(null);
+                //_cellMatrix[0, px, pz].CreateCellWall(null);
+                //_cellMatrix[_high - 1, px, pz].CreateCellWall(null);
+                
             }
         }*/
+        #endregion
+
+        
+        _cellMatrixWall = new CellMatrix[_high, _width, _depth];
+        float posX;
+        float posY;
+        float posZ;
+
+        for (int pz = 0; pz < _depth; pz++)
+        {
+            for (int py = 0; py < _high; py++)
+            {
+                posX = _cellMatrix[py, 0, pz].GetPx;
+                posY = _cellMatrix[py, 0, pz].GetPy +1;
+                posZ = _cellMatrix[py, 0, pz].GetPz;
+                _cellMatrixWall[py, 0, pz] = CreateAuxCell(posX, posY, posZ);
+
+                posX = _cellMatrix[py, _width - 1, pz].GetPx;
+                posY = _cellMatrix[py, _width - 1, pz].GetPy + 1;
+                posZ = _cellMatrix[py, _width - 1, pz].GetPz;
+
+                _cellMatrix[py, _width - 1, pz] = CreateAuxCell(posX, posY, posZ);
+
+            }
+
+            for (int px = 1; px < _width - 1; px++)
+            {
+                
+                posX = _cellMatrix[1, px, pz].GetPx;
+                posY = _cellMatrix[1, px, pz].GetPy + 1;
+                posZ = _cellMatrix[1, px, pz].GetPz+1;
+                _cellMatrixWall[1, px, pz] = CreateAuxCell(posX, posY, posZ);
+
+                posX = _cellMatrix[_high -1, px, pz].GetPx;
+                posY = _cellMatrix[_high - 1, px, pz].GetPy + 1;
+                posZ = _cellMatrix[_high - 1, px, pz].GetPz;
+                
+                _cellMatrix[_high-1, px, pz] = CreateAuxCell(posX, posY, posZ);
+
+            }
+        }
+    }
+
+
+    private CellMatrix CreateAuxCell(float posX,float posY, float posZ)
+    {
+        CellMatrix auxCell = new CellMatrix();
+
+        auxCell.SetPrefab(_cellPrefab);
+        auxCell.setName("wall[" + posY.ToString() + "," + posX.ToString() + "]");
+        
+        Vector3 vec = new Vector3(posX, posY, posZ);
+
+        auxCell.CreateCell(vec, 8, _wallTexture, false);
+
+        return auxCell;
     }
 
     public void Createobstacles(int radioNoObstacles = 0)
