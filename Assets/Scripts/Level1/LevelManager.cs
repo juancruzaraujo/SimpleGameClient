@@ -77,6 +77,7 @@ public class LevelManager : MonoBehaviour
                 Debug.Log(eventParameters.GetData);
                 //InGameConsole.ManagerConsola.instance.WriteLine(eventParameters.GetData);
                 _dataIn = eventParameters.GetData;
+                //ReadCommandFromServer(_dataIn);
                 break;
         }
     }
@@ -84,52 +85,48 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (_dataIn !="")
         {
             InGameConsole.ManagerConsola.instance.WriteLine(_dataIn);
             ReadCommandFromServer(_dataIn);
             _dataIn = "";
         }
+        
     }
 
     private void ReadCommandFromServer(string commandFromServer)
     {
+        BodyMessage body = new BodyMessage();
+        var bodyMessage = JsonConverter.JsonToClass(commandFromServer, typeof(BodyMessage), body);
+        body = (BodyMessage)bodyMessage;
 
         string[] commandParameters = new string[10];
-        
-        if (commandFromServer !="")
-        {
-            commandParameters = commandFromServer.Split('|');
-        }
 
 
-        if (commandFromServer.Contains(ConnectionCommands.DATAIN_CREATE_GRID))
+        if (body.messageTag == ConnectionCommands.DATAIN_CREATE_GRID)
         {
-            int size_x = int.Parse(commandParameters[1]);
-            int size_y = int.Parse(commandParameters[2]);
-            int size_z = int.Parse(commandParameters[3]);
-            int coordsValue = int.Parse(commandParameters[4]);
+            Map map = new Map();
+            var mapMsg = JsonConverter.JsonToClass(body.messageBody, typeof(Map), map);
+            map = (Map)mapMsg;
+
+
+            int size_x = map.LevelSizeX;
+            int size_y = map.LevelSizeY;
+            int size_z = map.LevelSizeZ;
+            int coordsValue = map.Coords;
+            List<Map.obstacles> lstObstacles = map.lstObstacles;
 
             InGameConsole.ManagerConsola.instance.WriteLine("Creando grilla>");
-            _gridContainer.GetComponent<Grid>().CreateGrid(size_x, size_y, size_z,coordsValue);
+            _gridContainer.GetComponent<Grid>().CreateGrid(size_x, size_y, size_z, coordsValue);
             _gridContainer.GetComponent<Grid>().CreatePerimeterWall();
+            _gridContainer.GetComponent<Grid>().CreateObstacles(lstObstacles);
 
 
             InGameConsole.ManagerConsola.instance.WriteLine("Grilla creada>");
             _tcpSocketClient.Send(_tcpConnectionNumber, ConnectionCommands.SEND_LEVEL_CREATED);
 
-
-            //result = GameComunication.DATASEND_CREATE_GRID + "|" + ConstantValues.LEVEL_SIZE_X + "|" + ConstantValues.LEVEL_SIZE_Y + "|" + ConstantValues.LEVEL_SIZE_Z;
         }
 
-        /*
-        if (commandFromServer.Contains(ConnectionCommands.DATAIN_CREATE_WALL))
-        {
-            InGameConsole.ManagerConsola.instance.WriteLine("Creado muro>");
-            _gridContainer.GetComponent<Grid>().CreatePerimeterWall();
-            InGameConsole.ManagerConsola.instance.WriteLine("Muro creado");
-            _tcpSocketClient.Send(_tcpConnectionNumber, ConnectionCommands.SEND_WALL_CREATED);
-        }
-        */
     }
 }

@@ -93,7 +93,7 @@ public class CellMatrix
         _cell = GameObject.Instantiate(_cellPrefab);
         _cell.AddComponent<Cell>();
         _cell.GetComponent<Cell>().setName(_name);
-        _cell.GetComponent<Cell>().SetCoordinatePoints(_py, _px); //setPointY(_py);
+        _cell.GetComponent<Cell>().SetCoordinatePoints(_py, _px); 
         _cell.GetComponent<Cell>().SetCoords(coordsValue);
         _cell.GetComponent<Cell>().SetTexture(texture);
         _cell.GetComponent<Cell>().IsObstacle = isObstacle;
