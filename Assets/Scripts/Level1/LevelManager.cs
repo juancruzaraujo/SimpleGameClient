@@ -11,7 +11,11 @@ public class LevelManager : MonoBehaviour
     public Texture wallTexture;
 
     public GameObject genericContainer;
+
     private GameObject _gridContainer;
+    private GameObject _wallContainer;
+    private GameObject _obstacleContainer;
+
     private GameObject _minionContainer;
 
     public GameObject cubeDefault; //va a contener lo que es el piso y paredes
@@ -45,11 +49,27 @@ public class LevelManager : MonoBehaviour
         connectionParameters.SetProtocol(Protocol.ConnectionProtocol.TCP);
 
         _gridContainer = Instantiate(genericContainer);
-        _gridContainer.name = "Grid Container";
+        _gridContainer.name = "Grid_Container";
         _gridContainer.AddComponent<Grid>();
         _gridContainer.GetComponent<Grid>().SetCellPrefab = cubeDefault;
         _gridContainer.GetComponent<Grid>().SetSoilTexture = soilTexture;
         _gridContainer.GetComponent<Grid>().SetWallTexture = wallTexture;
+
+        /*
+        _wallContainer = Instantiate(genericContainer);
+        _wallContainer.name = "Wall_Container";
+        _wallContainer.AddComponent<Grid>();
+        _wallContainer.GetComponent<Grid>().SetCellPrefab = cubeDefault;
+        _wallContainer.GetComponent<Grid>().SetSoilTexture = soilTexture;
+        _wallContainer.GetComponent<Grid>().SetWallTexture = wallTexture;
+
+        _obstacleContainer = Instantiate(genericContainer);
+        _obstacleContainer.name = "Obstacle_Container";
+        _obstacleContainer.AddComponent<Grid>();
+        _obstacleContainer.GetComponent<Grid>().SetCellPrefab = cubeDefault;
+        _obstacleContainer.GetComponent<Grid>().SetSoilTexture = soilTexture;
+        _obstacleContainer.GetComponent<Grid>().SetWallTexture = wallTexture;
+        */
 
         //recien ahora intento conectarme
         _tcpSocketClient.ConnectClient(connectionParameters); 

@@ -9,8 +9,9 @@ public class CellMatrix
     private int _px;
 
     private string _name;
-    private Texture _wallTexture;
-    private Texture _soilTexture;
+    //private Texture _wallTexture;
+    //private Texture _soilTexture;
+    private Texture _texture;
 
     private GameObject _cellPrefab;
     private Transform _tr;
@@ -18,10 +19,11 @@ public class CellMatrix
 
     private GameObject _cell;
 
-    public CellMatrix SetWallTexture(Texture wallTexture)
+    public CellMatrix SetTexture(Texture texture)
     {
-        _wallTexture = wallTexture;
-        return this;
+        //wallTexture = wallTexture;
+        _texture = texture;
+        return this; ;
     }
         
     public CellMatrix SetPrefab(GameObject cellprefab)
@@ -90,6 +92,7 @@ public class CellMatrix
     public void CreateCell(Vector3 localPos,int coordsValue,Texture texture,bool isObstacle)
     {
 
+        _texture = texture;
         _cell = GameObject.Instantiate(_cellPrefab);
         _cell.AddComponent<Cell>();
         _cell.GetComponent<Cell>().setName(_name);
@@ -101,6 +104,7 @@ public class CellMatrix
         _cell.transform.localPosition = localPos;
     }
 
+    /*
     public void CreateCellWall(Texture wallTexture)
     {
         
@@ -117,9 +121,10 @@ public class CellMatrix
         }
         else
         {
-            _cell.GetComponent<Cell>().SetTexture(_wallTexture);
+            _cell.GetComponent<Cell>().SetTexture(_texture);
         }
     }
+    */
 
     public void DestroyCellWall(Texture cellTexture)
     {
