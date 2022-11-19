@@ -16,6 +16,7 @@ public class CellMatrix
     private GameObject _cellPrefab;
     private Transform _tr;
     private Vector3 _scale;
+    Vector3 _localPos;
 
     private GameObject _cell;
 
@@ -83,6 +84,28 @@ public class CellMatrix
         return this;
     }
 
+    public Transform GetParent
+    {
+        get
+        {
+            return _tr;
+        }
+    }
+
+    public CellMatrix setLocalPoss(Vector3 localPosition)
+    {
+        _localPos = localPosition;
+        return this;
+    }
+
+    public Vector3 GetLocalPoss
+    {
+        get
+        {
+            return _localPos;
+        }
+    }
+
     public CellMatrix SetScale(Vector3 scale)
     {
         _scale = scale;
@@ -102,52 +125,7 @@ public class CellMatrix
         _cell.GetComponent<Cell>().IsObstacle = isObstacle;
         _cell.transform.parent = _tr;
         _cell.transform.localPosition = localPos;
-    }
-
-    /*
-    public void CreateCellWall(Texture wallTexture)
-    {
-        
-        float posX = _cell.GetComponent<Cell>().transform.position.x;
-        float posY = _cell.GetComponent<Cell>().transform.position.y + 1; // Defaults.C_CELL_UP_MOVE_UNIT;
-        float posZ = _cell.GetComponent<Cell>().transform.position.z;
-
-        _cell.GetComponent<Cell>().transform.position = new Vector3(posX, posY, posZ);
-        _cell.GetComponent<Cell>().IsObstacle = true;
-        _cell.GetComponent<Cell>().setName("wall");
-        if (wallTexture != null)
-        {
-            _cell.GetComponent<Cell>().SetTexture(wallTexture);
-        }
-        else
-        {
-            _cell.GetComponent<Cell>().SetTexture(_texture);
-        }
-    }
-    */
-
-    public void DestroyCellWall(Texture cellTexture)
-    {
-        //float posX = _cell.GetComponent<Cell>().transform.position.x;
-        //float posY = _cell.GetComponent<Cell>().transform.position.y - Defaults.C_CELL_UP_MOVE_UNIT;
-        //float posZ = _cell.GetComponent<Cell>().transform.position.z;
-
-        //_cell.GetComponent<Cell>().transform.position = new Vector3(posX, posY, posZ);
-        //_cell.GetComponent<Cell>().IsObstacle = false;
-        //if (cellTexture != null)
-        //{
-        //    _cell.GetComponent<Cell>().SetTexture(cellTexture);
-        //}
-        //else
-        //{
-        //    _cell.GetComponent<Cell>().SetTexture(_soilTexture);
-        //}
-    }
-
-    public bool CreateCellObstacle(int py, int px, int pz)
-    {
-        //hacer que revise lo vecinos por si tiene que crear o no la celda
-        return true;
+        setLocalPoss(localPos);
     }
 
     public Vector3 GetCellPosition()
