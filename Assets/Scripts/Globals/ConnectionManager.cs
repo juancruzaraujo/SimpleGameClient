@@ -22,6 +22,9 @@ public class ConnectionManager : MonoBehaviour
 
     public void ConnectToServerAndGoToScene(string sceneName)
     {
+
+        ManagerConsola.instance.WriteLine(sceneName);
+
         GetMenuValues();
 
         ConnectionData connData = ConnectionData.ConnectionDataInstance;
@@ -32,6 +35,7 @@ public class ConnectionManager : MonoBehaviour
         GameObject obj = GameObject.Find("MenuManager");
         MenuManager menuManager = obj.GetComponent<MenuManager>();
         menuManager.LoadScene(sceneName);
+        
     }
 
     private void GetMenuValues()

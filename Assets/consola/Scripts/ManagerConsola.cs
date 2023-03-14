@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace InGameConsole
 {
+    [DefaultExecutionOrder(-50)]
     public  class ManagerConsola : MonoBehaviour
     {
 
@@ -302,11 +303,11 @@ namespace InGameConsole
             else
             {
 
-                //txtLogConsola.text = txtLogConsola.text + _LineaIngresada[_LineaIngresada.Count-1] + "\r\n";
-                UnityEngine.WSA.Application.InvokeOnAppThread(() =>
+                txtLogConsola.text = txtLogConsola.text + _LineaIngresada[_LineaIngresada.Count-1] + "\r\n";
+                /*UnityEngine.WSA.Application.InvokeOnAppThread(() =>
                 {
                     txtLogConsola.text = txtLogConsola.text + _LineaIngresada[_LineaIngresada.Count - 1] + "\r\n";
-                }, false);
+                }, false);*/
             }
 
             _PosFinalHastaDondeMuestro = _LineaIngresada.Count - 1; //me guardo hasta donde muestro

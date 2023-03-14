@@ -34,6 +34,10 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
+        
+        InGameConsole.ManagerConsola.instance.WriteLine("Iniciando nivel");
+        InGameConsole.Commands.commandInstance.AddCommand("/conn", "test", SetConnectionParameters);
+        
         _dataIn = "";
         _tcpSocketClient = new Socket();
         _tcpSocketClient.Event_Socket += TCPSocketClient_Event_Socket;
@@ -56,46 +60,74 @@ public class LevelManager : MonoBehaviour
         _gridContainer.GetComponent<Grid>().SetWallTexture = wallTexture;
 
         //recien ahora intento conectarme
-        _tcpSocketClient.ConnectClient(connectionParameters); 
+        
+        //InGameConsole.ManagerConsola.instance.WriteLine("Conectando");
+        ////_tcpSocketClient.ConnectClient(connectionParameters);
+        ConnetToServer(connectionParameters);
+        
+        
+    }
+
+
+    //para pruebas, hay que borrar esta función
+    void SetConnectionParameters(string param1, string param2)
+    {
+        ConnectionData connData = ConnectionData.ConnectionDataInstance;
+
+        InGameConsole.ManagerConsola.instance.WriteLine(connData.PlayerName);
+        InGameConsole.ManagerConsola.instance.WriteLine(connData.Host + ":" + connData.Port);
+
+        ConnectionParameters connectionParameters = new ConnectionParameters();
+        connectionParameters.SetPort(int.Parse(connData.Port));
+        connectionParameters.SetHost(connData.Host);
+        connectionParameters.SetProtocol(Protocol.ConnectionProtocol.TCP);
+
+        ConnetToServer(connectionParameters);
+    }
+
+    void ConnetToServer(ConnectionParameters connectionParameters)
+    {
+        _tcpSocketClient.ConnectClient(connectionParameters);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
-
-
+        InGameConsole.ManagerConsola.instance.WriteLine("start level");
     }
 
     private void TCPSocketClient_Event_Socket(EventParameters eventParameters)
     {
+        
         switch (eventParameters.GetEventType)
         {
             case EventParameters.EventType.CLIENT_CONNECTION_OK:
-                InGameConsole.ManagerConsola.instance.WriteLine(eventParameters.GetEventType.ToString());
+                //InGameConsole.ManagerConsola.instance.WriteLine(eventParameters.GetEventType.ToString());
                 _tcpConnectionNumber = eventParameters.GetConnectionNumber;
                 _tcpSocketClient.Send(_tcpConnectionNumber, ConnectionCommands.SEND_CONNECTION_OK);
                 break;
 
             case EventParameters.EventType.DATA_IN:
                 Debug.Log(eventParameters.GetData);
-                //InGameConsole.ManagerConsola.instance.WriteLine(eventParameters.GetData);
+                //InGameConsole.ManagerConsola.instance.WriteLine(eventParameters.GetData); //NO VA
                 _dataIn = eventParameters.GetData;
-                //ReadCommandFromServer(_dataIn);
+                //ReadCommandFromServer(_dataIn); //NO VA
                 break;
         }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
         if (_dataIn !="")
         {
             InGameConsole.ManagerConsola.instance.WriteLine(_dataIn);
             ReadCommandFromServer(_dataIn);
             _dataIn = "";
         }
+        
         
     }
 
